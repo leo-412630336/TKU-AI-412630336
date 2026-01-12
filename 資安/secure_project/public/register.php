@@ -19,7 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (trim($captcha) !== '12') {
         $error = "Incorrect Security Answer.";
     } else {
-        $result = register_user($pdo, $username, $password);
+        // Pass MongoDB manager and dbName
+        $result = register_user($manager, $dbName, $username, $password);
         if ($result['success']) {
             $success = "Registration successful! You can now login.";
         } else {

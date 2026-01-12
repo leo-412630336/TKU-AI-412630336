@@ -66,7 +66,10 @@ function register_user($manager, $dbName, $username, $password)
     // 3. Hash password
     $hash = password_hash($password, PASSWORD_ARGON2ID);
 
-    // 4. Insert user
+    // 4. Assign Role (Auto-admin for 'admin' user, else 'user')
+    $role = ($username === 'admin') ? 'admin' : 'user';
+
+    // 5. Insert user
     try {
         $bulk = new MongoDB\Driver\BulkWrite;
         $id = new MongoDB\BSON\ObjectId();
@@ -74,11 +77,12 @@ function register_user($manager, $dbName, $username, $password)
             '_id' => $id,
             'username' => $username,
             'password_hash' => $hash,
+            'role' => $role,
             'created_at' => new MongoDB\BSON\UTCDateTime()
         ]);
         $manager->executeBulkWrite("$dbName.users", $bulk);
 
-        log_event($manager, $dbName, 'REGISTER_SUCCESS', "New user registered: $username", (string) $id);
+        log_event($manager, $dbName, 'REGISTER_SUCCESS', "New user registered: $username ($role)", (string) $id);
 
         return ['success' => true, 'message' => 'Registration successful!'];
     } catch (Exception $e) {
@@ -113,6 +117,7 @@ function login_user($manager, $dbName, $username, $password)
         session_regenerate_id(true);
         $_SESSION['user_id'] = (string) $user->_id;
         $_SESSION['username'] = $user->username;
+        $_SESSION['role'] = $user->role ?? 'user'; // Default to user if not set
 
         log_event($manager, $dbName, 'LOGIN_SUCCESS', "User logged in", (string) $user->_id);
         return ['success' => true];
@@ -121,6 +126,22 @@ function login_user($manager, $dbName, $username, $password)
         record_failed_login($manager, $dbName, $ip);
         log_event($manager, $dbName, 'LOGIN_FAIL', "Failed login attempt for username: $username");
         return ['success' => false, 'message' => 'Invalid username or password.'];
+    }
+}
+
+function get_all_users($manager, $dbName)
+{
+    try {
+        $query = new MongoDB\Driver\Query([], ['sort' => ['created_at' => -1]]);
+        $cursor = $manager->executeQuery("$dbName.users", $query);
+        $users = [];
+        foreach ($cursor as $doc) {
+            $doc->created_at_fmt = $doc->created_at->toDateTime()->format('Y-m-d H:i');
+            $users[] = $doc;
+        }
+        return $users;
+    } catch (Exception $e) {
+        return [];
     }
 }
 ?>

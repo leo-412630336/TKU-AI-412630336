@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    $result = login_user($pdo, $username, $password);
+    // Pass MongoDB manager and dbName
+    $result = login_user($manager, $dbName, $username, $password);
 
     if ($result['success']) {
         header("Location: home.php");

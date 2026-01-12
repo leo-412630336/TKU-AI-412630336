@@ -16,6 +16,10 @@
         <?php if (isset($_SESSION['user_id'])): ?>
             <nav>
                 <a href="home.php">Home</a>
+                <a href="apply.php">Apply Event</a>
+                <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
+                    <a href="admin.php" style="color:red; font-weight:bold;">Admin Panel</a>
+                <?php endif; ?>
                 <a href="logout.php">Logout</a>
             </nav>
         <?php endif; ?>
