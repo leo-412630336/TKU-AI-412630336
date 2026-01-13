@@ -30,3 +30,6 @@ mongod
 ### 步驟三：開啟網頁
 打開瀏覽器，網址輸入：
 [http://localhost:8000](http://localhost:8000)
+
+## mongodb compass
+打開後，中間會有一個輸入框 "New Connection" 或 "URI"。 請輸入： mongodb://localhost:27017
