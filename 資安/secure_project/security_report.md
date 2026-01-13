@@ -15,6 +15,8 @@
 3.  **防暴力破解機制 (Brute Force Protection)**
     -   **實作位置**: `src/auth.php` (`check_brute_force` 函式)
     -   **說明**: 系統會記錄每個 IP 的登入失敗次數。若同一 IP 在短時間內連續失敗超過 5 次，系統將暫時封鎖該 IP 的登入請求。這能有效阻止自動化腳本的撞庫攻擊。
+    -   **恢復**:http://localhost:8000/reset_login_attempts.php
+
 
 4.  **CSRF (跨站請求偽造) 防護**
     -   **實作位置**: `src/security.php`, 所有 POST 表單
