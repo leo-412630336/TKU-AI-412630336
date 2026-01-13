@@ -1,6 +1,4 @@
-# 專案安全設計報告 (Security Design Report)
 
-本專案實作了多層次的縱深防禦 (Defense in Depth)，以下為詳細的安全設計說明。
 
 ## 5 個後端安全設計 (Backend Security)
 
