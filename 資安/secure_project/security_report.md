@@ -23,6 +23,7 @@
 5.  **角色權限控管**
     -   **實作位置**: `public/admin.php`
     -   **說明**: 實作了嚴格的存取控制。在敏感頁面 (如管理後台) 載入前，後端會檢查 Session 中的 `role` 是否為 `admin`。若非管理員，系統會立即終止執行並將使用者導回首頁，防止越權存取 (Broken Access Control)。
+    -   **admin強制登陸**:http://localhost/public/admin.php
 
 ## 3 個前端安全設計
 
