@@ -4,18 +4,12 @@ require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../src/forms.php';
 require_once __DIR__ . '/../src/security.php';
 
-// 1. Access Control: Check if logged in AND is admin
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-    // Log unauthorized access attempt
-    // (We need manager here, assuming db.php provides it)
-    header("Location: home.php"); // Silent redirect or show error
-    exit;
+    header("Location: home.php");
 }
 
 generate_csrf_token();
 
-// Handle Delete Action
-// Handle Delete Action
 if (isset($_POST['delete_id'])) {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
         die("CSRF Validation Failed.");
@@ -29,8 +23,7 @@ if (isset($_POST['delete_id'])) {
 
 $applications = get_all_applications($manager, $dbName);
 
-// Fetch All Users for display
-require_once __DIR__ . '/../src/auth.php'; // Ensure auth is loaded for get_all_users
+require_once __DIR__ . '/../src/auth.php'; 
 $users = get_all_users($manager, $dbName);
 
 $pageTitle = 'Admin Panel - Secure App';

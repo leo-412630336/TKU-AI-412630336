@@ -1,4 +1,3 @@
-// public/js/script.js
 
 document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', (e) => {
-            // Basic Client-side Validation
             const inputs = form.querySelectorAll('input[required]');
             let valid = true;
             inputs.forEach(input => {

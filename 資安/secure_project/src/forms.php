@@ -1,11 +1,9 @@
 <?php
-// src/forms.php
 
 require_once __DIR__ . '/security.php';
 
 function submit_application($manager, $dbName, $userId, $data)
 {
-    // 1. Validate Input
     $eventName = sanitize_input($data['event_name'] ?? '');
     $participantName = sanitize_input($data['participant_name'] ?? '');
     $email = sanitize_input($data['email'] ?? '');
@@ -14,7 +12,6 @@ function submit_application($manager, $dbName, $userId, $data)
         return ['success' => false, 'message' => 'All fields are required.'];
     }
 
-    // 2. Insert into 'forms' collection
     try {
         $bulk = new MongoDB\Driver\BulkWrite;
         $id = new MongoDB\BSON\ObjectId();
@@ -43,7 +40,6 @@ function get_all_applications($manager, $dbName)
         $cursor = $manager->executeQuery("$dbName.forms", $query);
         $forms = [];
         foreach ($cursor as $doc) {
-            // Add ID string for deletion link
             $doc->id_str = (string) $doc->_id;
             $doc->created_at_fmt = $doc->created_at->toDateTime()->format('Y-m-d H:i');
             $forms[] = $doc;

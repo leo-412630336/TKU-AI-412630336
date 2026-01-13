@@ -4,19 +4,16 @@ require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/security.php';
 
-// Generate Token if not exists
 generate_csrf_token();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 1. Verify CSRF
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        die("CSRF Validation Failed.");
+        die("CSRF 驗證失敗。");
     }
 
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Pass MongoDB manager and dbName
     $result = login_user($manager, $dbName, $username, $password);
 
     if ($result['success']) {

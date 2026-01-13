@@ -1,8 +1,7 @@
 <?php
-// public/fix_admin.php
 require_once __DIR__ . '/../config/db.php';
 
-$username = 'admin'; // The username you want to promote
+$username = 'admin'; 
 
 try {
     $bulk = new MongoDB\Driver\BulkWrite;

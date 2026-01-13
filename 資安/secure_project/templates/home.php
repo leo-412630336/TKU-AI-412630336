@@ -1,43 +1,42 @@
-<h1>Welcome, <?= htmlspecialchars($_SESSION['username']) ?>!</h1>
+<h1>歡迎, <?= htmlspecialchars($_SESSION['username']) ?>!</h1>
 
 <div class="alert alert-success">
-    You have successfully logged in via a secure authentication system (MongoDB).
+    您已透過安全的驗證系統 (MongoDB) 成功登入。
 </div>
 
 <p>
-    This page is protected. It validates your session and ensures you are authenticated.
+    此頁面受保護。系統會驗證您的 Session 並確保您已經通過身份驗證。
 </p>
 
-<h3>Security Features Active:</h3>
+<h3>已啟用的安全功能：</h3>
 <ul>
-    <li>Session Management (HttpOnly Cookies)</li>
-    <li>Output Encoding (XSS Protection)</li>
-    <li>Database Queries via MongoDB Driver (NoSQL Injection Protection)</li>
+    <li>Session 管理 (HttpOnly Cookies)</li>
+    <li>輸出編碼 (XSS 防護)</li>
+    <li>透過 MongoDB Driver 進行資料庫查詢 (NoSQL Injection 防護)</li>
 </ul>
 
 <hr>
 
-<h3>Test NoSQL Injection Protection</h3>
-<p>Try searching for a user. Standard SQL payloads like <code>' OR 1=1</code> won't work on MongoDB.</p>
-<p>You can try NoSQL payloads e.g. using a tool to send `?search[$ne]=null`, but our backend prevents this by type
-    casting.</p>
+<h3>測試 NoSQL Injection 防護</h3>
+<p>試著搜尋使用者。標準的 SQL payload 如 <code>' OR 1=1</code> 對 MongoDB 無效。</p>
+<p>您可以嘗試 NoSQL payloads 例如使用工具發送 `?search[$ne]=null`，但我們的後端會透過型別轉換與檢測來防禦。</p>
 
 <form method="GET" action="home.php" style="margin-bottom: 2rem;">
     <div class="form-group">
-        <input type="text" name="search" placeholder="Search username..." value="<?= htmlspecialchars($search ?? '') ?>"
+        <input type="text" name="search" placeholder="搜尋使用者..." value="<?= htmlspecialchars($search ?? '') ?>"
             style="width: 70%; display: inline-block;">
-        <button type="submit" style="width: 25%; display: inline-block;">Search</button>
+        <button type="submit" style="width: 25%; display: inline-block;">搜尋</button>
     </div>
 </form>
 
 <?php if (isset($search) && $search !== ''): ?>
-    <h4>Search Results for "<?= htmlspecialchars($search) ?>"</h4>
+    <h4>"<?= htmlspecialchars($search) ?>" 的搜尋結果</h4>
     <?php if (empty($searchResults)): ?>
-        <p>No users found.</p>
+        <p>找不到使用者。</p>
     <?php else: ?>
         <ul>
             <?php foreach ($searchResults as $user): ?>
-                <li><?= htmlspecialchars($user['username']) ?> (Joined: <?= htmlspecialchars($user['created_at']) ?>)</li>
+                <li><?= htmlspecialchars($user['username']) ?> (加入時間: <?= htmlspecialchars($user['created_at']) ?>)</li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>

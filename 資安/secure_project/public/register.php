@@ -8,21 +8,19 @@ generate_csrf_token();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        die("CSRF Validation Failed.");
+        die("CSRF 驗證失敗。");
     }
 
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     $captcha = $_POST['captcha'] ?? '';
 
-    // Mock CAPTCHA Validation (5 + 7 = 12)
     if (trim($captcha) !== '12') {
-        $error = "Incorrect Security Answer.";
+        $error = "安全驗證回答錯誤。";
     } else {
-        // Pass MongoDB manager and dbName
         $result = register_user($manager, $dbName, $username, $password);
         if ($result['success']) {
-            $success = "Registration successful! You can now login.";
+            $success = "註冊成功！您現在可以登入了。";
         } else {
             $error = $result['message'];
         }

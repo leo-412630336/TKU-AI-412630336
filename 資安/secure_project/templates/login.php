@@ -1,4 +1,4 @@
-<h1>Login</h1>
+<h1>登入</h1>
 
 <?php if (isset($error)): ?>
     <div class="alert alert-error">
@@ -14,21 +14,21 @@
 
 <form method="POST" action="login.php">
     <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username">使用者名稱</label>
         <input type="text" id="username" name="username" required>
     </div>
 
     <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">密碼</label>
         <input type="password" id="password" name="password" required>
     </div>
 
     <!-- CSRF Token -->
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
-    <button type="submit">Login</button>
+    <button type="submit">登入</button>
 </form>
 
 <p style="text-align:center; margin-top:1rem;">
-    Don't have an account? <a href="register.php">Register here</a>
+    還沒有帳號嗎？ <a href="register.php">點此註冊</a>
 </p>

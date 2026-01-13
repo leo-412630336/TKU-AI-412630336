@@ -1,8 +1,4 @@
 <?php
-// config/db.php
-
-// Since Composer is not installed, we use the low-level MongoDB\Driver\Manager
-// which comes with the pecl/mongodb extension.
 
 $host = '127.0.0.1';
 $port = '27017';
